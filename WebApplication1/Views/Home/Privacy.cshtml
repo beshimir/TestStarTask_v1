@@ -1,22 +1,42 @@
-﻿@model IEnumerable<WebApplication1.Models.BagOfData>
+﻿@model WebApplication1.Models.User
 
 @{
     ViewData["Title"] = "Privacy Policy";
-    //var currentUser = Model.Where(x => x.id == @itemid.ToString()).First();
+    User current_user = Model;
 }
-<h1>@ViewData["Title"]</h1>
 
-<div class="text-center">   
+
+<div class="text-center flex flex-row">
+
+    <div class="user-information-table d-flex flex-row">
+        <div class="d-flex flex-column">
+            <p class="mr-5 text-right">User ID</p>
+            <p class="mr-5 text-right">User Email</p>
+        </div>
+        <div class="d-flex flex-column">
+            <p class="mr-5">@current_user.id</p>
+            <p class="mr-5">@current_user.email</p>
+        </div>
+    </div>
+
+
+
+    <p>Expense description</p>
+    <p>Expense amount</p>
+
+
+
+    @foreach (var expense in @current_user.expenses)
     {
-        <table>
-            <tr>
-                <th>User ID</th>
-                <th>User Email</th>
-            </tr>
-            <tr>
-            <!--<td>currentUser.id</td>-->
-            <!--<td>currentUser.email</td>-->
-            </tr>
-        </table>
+        <td>@expense.description</td>
+        <td>@expense.amount</td>
     }
+
+
+    <form class="add-expense-form" method="post" asp-controller="Home" asp-action="Create">
+        <input type="hidden" name="user_api_id" value="@current_user.id" />
+        <input type="text" name="description" placeholder="Description here..." />
+        <input type="number" name="amount" placeholder="Amount here..." />
+        <input type="submit" value="Add new expense" />
+    </form>
 </div>

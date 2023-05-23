@@ -64,6 +64,18 @@ namespace WebApplication1.Controllers
             HttpResponseMessage response = await client.PutAsync($"https://6464b03b127ad0b8f8a53cf7.mockapi.io/users/{user_api_id}", request_content);
         }
 
+        public static async Task CheckIfUserExists(string email)
+        {
+            if (BagOfData.ContainsData(email))
+            {
+                // return Privacy with current_user with that email
+            }
+            else
+            {
+                // return an error or something. create new user?
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(string user_api_id, int amount, string description)
         {
@@ -81,6 +93,19 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Login(string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            await CheckIfUserExists(email);
+
+            return RedirectToAction("Privacy");
+        }
+
         /// <summary>
         /// Index page
         /// </summary>
@@ -96,9 +121,9 @@ namespace WebApplication1.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        public IActionResult Privacy()
+        public IActionResult Privacy(User current_user)
         {
-            return View(BagOfData);
+            return View(current_user);
         }
 
         /// <summary>
