@@ -16,6 +16,11 @@ namespace WebApplication1.Models
             UnorderedData.Add(name, data);
         }
 
+        public void ReplaceData(string name, dynamic data) 
+        {
+            UnorderedData[name] = data;
+        }
+
         public bool ContainsData(string name)
         {
             return UnorderedData.ContainsKey(name);

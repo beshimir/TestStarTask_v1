@@ -13,6 +13,13 @@
             this.expenses = expenses;
         }
 
+        public User(string email)
+        {
+            id = Guid.NewGuid().ToString();
+            this.email = email;
+            expenses = new List<Expense>();
+        }
+
         public User()
         {
             id = Guid.NewGuid().ToString();

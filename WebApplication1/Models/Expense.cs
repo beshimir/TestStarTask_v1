@@ -2,17 +2,22 @@
 {
     public class Expense
     {
+        //public string id { get; set; }
+        public string name { get; set; }
+        public string date { get; set; }
         public string description { get; set; }
         public int amount { get; set; }
-        //public List<PaymentRequest> debts_outgoing { get; set; }
-        //public List<PaymentRequest> debts_incoming { get; set; }
+        public List<Payment> duePaymentsOutbound { get; set; }
+        public List<Payment> duePaymentsInbound { get; set; }
 
-        public Expense(string description, int amount/*, List<PaymentRequest> debts_outgoing, List<PaymentRequest> debts_incoming*/)
+        public Expense(/*string id,*/ string name, string date, string description, int amount) 
         {
+            this.name = name;
+            this.date = date;
             this.description = description;
             this.amount = amount;
-          //  this.debts_outgoing = debts_outgoing;
-          //  this.debts_incoming = debts_incoming;
+            this.duePaymentsInbound = new List<Payment>();
+            this.duePaymentsOutbound = new List<Payment>();
         }
     }
 }

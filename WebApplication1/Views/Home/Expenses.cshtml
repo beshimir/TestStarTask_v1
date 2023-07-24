@@ -1,0 +1,98 @@
+﻿@model WebApplication1.Models.BagOfData
+
+@{
+    ViewData["Title"] = "Expenses Policy";
+    User current_user = Model.GetData("current_user");
+    string show = "none";
+}
+
+
+<div class="text-center flex flex-row">
+
+    <div class="user-information-table d-flex flex-row">
+        <div class="d-flex flex-column">
+            <strong><p style="text-align:left; margin-right: 2rem;">User ID</p></strong>
+            <strong><p style="text-align:left; margin-right: 2rem;">User Email</p></strong>
+        </div>
+        <div class="d-flex flex-column">
+            <p style="text-align:right;">@current_user.id</p>
+            <p style="text-align:right;">@current_user.email</p>
+        </div>
+    </div>
+
+    <br />
+
+    <form class="add-expense-form" method="post" asp-controller="Home" asp-action="CreateExpense">
+        <input type="hidden" name="user_api_id" value="@current_user.id" />
+        <input type="text" name="name" placeholder="Name here..." />
+        <input type="text" name="description" placeholder="Description here..." />
+        <input type="number" name="amount" placeholder="Amount here..." />
+        <input type="submit" value="Add new expense" />
+    </form>
+
+    @foreach (var expense in @current_user.expenses)
+    {
+        <div style="border-top: 2px solid;max-width:500px;">
+            <strong><p style="text-align:left;">Expense name:</p></strong>
+            <p style="text-align:left;">@expense.name</p>
+            <strong><p style="text-align:left;">Expense date:</p></strong>
+            <p style="text-align:left;">@expense.date</p>
+            <strong><p style="text-align:left;">Expense description:</p></strong>
+            <p style="text-align:left;">@expense.description</p>
+            <strong><p style="text-align:left;">Expense amount:</p></strong>
+            <p style="text-align:left;">@expense.amount</p>
+            <div style="padding: 5px; border:solid 1px;">
+                <strong><p style="text-align:left;">Payment details:</p></strong>
+                <br />
+                <strong><p style="text-align:left;">Payments owed to me details:</p></strong>
+                @foreach (var payment in expense.duePaymentsInbound)
+                {
+                    <i><p style="margin-bottom: 5px;font-size: 12px; text-align:left;">Payment from:</p></i>
+                    <p style="margin-bottom: 5px;font-size: 12px;text-align:left;">@payment.email</p>
+                    <i><p style="margin-bottom: 5px;font-size: 12px;text-align:left;">Amount due:</p></i>
+                    <p style="margin-bottom: 5px;font-size: 12px;text-align:left;">@payment.amountDue</p>
+                    <form class="add-expense-form" method="post" asp-controller="Home" asp-action="UpdateInboundPayment">
+                        <input type="hidden" name="user_api_id" value="@current_user.id" />
+                        <input type="hidden" name="payment" value="@payment.id" />
+                        <input type="hidden" name="expense_date" value="@expense.date" />
+                        <input type="number" name="updated_amountPaid" placeholder="Amount here..." />
+                        <input type="submit" value="Update payment" />
+                    </form>
+                    <i><p style="margin-bottom: 5px;font-size: 12px;text-align:left;">Amount already paid:</p></i>
+                    <p style="margin-bottom: 5px;font-size: 12px;text-align:left;">@payment.amountPaid</p>
+                }
+                <strong><p style="text-align:left;">Payments due to others details:</p></strong>
+                @foreach (var payment in expense.duePaymentsOutbound)
+                {
+                    <i><p style="margin-bottom: 5px;font-size: 12px;text-align:left;">Payment to:</p></i>
+                    <p style="margin-bottom: 5px;font-size: 12px;text-align:left;">@payment.email</p>
+                    <i><p style="margin-bottom: 5px;font-size: 12px;text-align:left;">Amount due:</p></i>
+                    <p style="margin-bottom: 5px;font-size: 12px;text-align:left;">@payment.amountDue</p>
+                    <form class="add-expense-form" method="post" asp-controller="Home" asp-action="UpdateOutboundPayment">
+                        <input type="hidden" name="user_api_id" value="@current_user.id" />
+                        <input type="hidden" name="payment" value="@payment.id" />
+                        <input type="hidden" name="expense_date" value="@expense.date" />
+                        <input type="number" name="updated_amountPaid" placeholder="Amount here..." />
+                        <input type="submit" value="Update payment" />
+                    </form>
+                    <i><p style="margin-bottom: 5px;font-size: 12px;text-align:left;">Amount already paid:</p></i>
+                    <p style="margin-bottom: 5px;font-size: 12px;text-align:left;">@payment.amountPaid</p>
+                }
+
+                    <form class="add-expense-form" method="post" asp-controller="Home" asp-action="CreatePayment">
+                        <input type="hidden" name="user_api_id" value="@current_user.id" />
+                        <input type="hidden" name="expense_date" value="@expense.date" />
+                        <input type="text" name="name" placeholder="Email here..." />
+                        <input type="number" name="amountDue" placeholder="Amount due here..." />
+                        <input type="number" name="amountPaid" placeholder="Amount paid here..." />
+                        <select name="type_of_payment">
+                            <option value="Inbound">Inbound</option>
+                            <option value="Outbound">Outbound</option>
+                        </select>
+                        <input type="submit" value="Add new payment" />
+                    </form>
+
+            </div>
+        </div>
+    }
+</div>
